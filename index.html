@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy New Year Uncle!</title>
     <style>
+        /* --- 1. CẤU HÌNH GIAO DIỆN & PHÔNG CHỮ --- */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
 
         body, html {
@@ -16,7 +17,7 @@
 
         canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none;}
 
-        /* KHUNG VIỀN CHÍNH VỚI HIỆU ỨNG ĐỘNG */
+        /* --- 2. KHUNG VIỀN CHÍNH (ĐÃ ẨN THANH CUỘN) --- */
         .full-screen-frame {
             position: absolute;
             top: 20px; bottom: 20px;
@@ -28,14 +29,28 @@
             outline-offset: -10px;
             border-radius: 5px;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden; /* Để ẩn các tia sáng chạy qua */
+            
+            /* XỬ LÝ ẨN THANH CUỘN */
+            overflow-y: auto; 
+            overflow-x: hidden;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            
             color: #fff; z-index: 10;
             opacity: 0; animation: fadeIn 1.5s ease-out forwards;
-            padding: 30px; 
+            padding: 40px 30px; 
+            box-sizing: border-box;
         }
 
-        /* TIA SÁNG CHẠY NGANG KHUNG (SHIMMER EFFECT) */
+        /* Ẩn thanh cuộn cho Chrome/Safari */
+        .full-screen-frame::-webkit-scrollbar {
+            display: none;
+            width: 0 !important;
+        }
+
+        /* TIA SÁNG CHẠY NGANG (SHIMMER) */
         .full-screen-frame::before {
             content: '';
             position: absolute;
@@ -52,7 +67,7 @@
             100% { left: 150%; }
         }
 
-        /* KHUNG ẢNH SLIDESHOW */
+        /* --- 3. KHUNG ẢNH ĐỘNG (SLIDESHOW) --- */
         .slideshow-container {
             position: relative;
             width: 35vh; height: 35vh;
@@ -65,7 +80,7 @@
             overflow: hidden;
             background: #000;
             flex-shrink: 0; 
-            animation: float 4s ease-in-out infinite; /* Ảnh lơ lửng nhẹ */
+            animation: float 4s ease-in-out infinite;
         }
 
         @keyframes float {
@@ -81,7 +96,7 @@
         }
         .slide-img.active { opacity: 1; transform: scale(1.05); transition: opacity 2s, transform 8s linear; }
 
-        /* NỘI DUNG CHỮ VỚI HOẠT ẢNH HIỆN RA LẦN LƯỢT */
+        /* --- 4. NỘI DUNG CHỮ --- */
         .text-content {
             max-width: 750px; width: 100%; text-align: center; z-index: 2;
         }
@@ -102,7 +117,7 @@
         }
 
         p { 
-            line-height: 1.8; font-size: 2.5vh; color: #e0e0e0; margin-bottom: 2vh;
+            line-height: 1.8; font-size: 2.6vh; color: #e0e0e0; margin-bottom: 2vh;
             font-weight: 300; opacity: 0;
             animation: fadeInUp 1s ease-out forwards;
         }
@@ -127,11 +142,18 @@
 
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* RESPONSIVE */
+        /* --- 5. RESPONSIVE --- */
         @media (max-height: 750px) {
-            .full-screen-frame { justify-content: flex-start; padding-top: 40px; overflow-y: auto; }
+            .full-screen-frame { justify-content: flex-start; padding-top: 60px; }
             .slideshow-container { width: 28vh; height: 28vh; }
             h1 { font-size: 5vh; }
+        }
+
+        @media (max-aspect-ratio: 3/4) { 
+            .full-screen-frame { justify-content: center; padding: 20px; }
+            .slideshow-container { width: 65vw; height: 65vw; }
+            h1 { font-size: 3.2rem; }
+            p { font-size: 1.25rem; }
         }
     </style>
 </head>
@@ -155,7 +177,7 @@
     </div>
 
     <script>
-        // 1. Slideshow
+        // 1. Chuyển ảnh tự động
         const slides = document.querySelectorAll('.slide-img');
         let currentSlide = 0;
         function nextSlide() {
@@ -166,7 +188,7 @@
         }
         setInterval(nextSlide, 5000);
 
-        // 2. Starfield Effect
+        // 2. Hiệu ứng hạt bụi vàng bay
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         let w, h, particles = [];
@@ -179,7 +201,7 @@
             this.x = random(0, w); 
             this.y = h + random(0, 100);
             this.speed = random(0.2, 0.8);
-            this.radius = random(0.5, 2);
+            this.radius = random(0.5, 2.5);
             this.opacity = random(0.1, 0.6);
             this.color = Math.random() > 0.8 ? "rgba(212, 175, 55, " : "rgba(255, 255, 255, "; 
         }
