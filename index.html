@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year Uncle!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400&display=swap');
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #050505;
+            font-family: 'Lato', sans-serif;
+        }
+
+        /* Hiệu ứng nền */
+        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* Khung chứa nội dung */
+        .card {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%; max-width: 500px;
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 40px; border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            text-align: center; color: #fff; z-index: 10;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+            opacity: 0; animation: fadeUp 1.5s ease-out forwards;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem; color: #ffd700; margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        p {
+            font-size: 1.15rem; line-height: 1.8; color: #e0e0e0; margin-bottom: 25px;
+        }
+
+        .highlight { color: #ffd700; font-weight: bold; }
+        .signature {
+            font-style: italic; font-size: 1rem; opacity: 0.8; margin-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="card">
+        <h1>Happy New Year, Uncle!</h1>
+        <p>
+            I know we’re both doing our own thing, but I’m always <b>rooting for you</b>. 
+            Congrats on all the progress lately.
+        </p>
+        <p>
+            Make sure to take some <span class="highlight">downtime</span> this year—sometimes stepping back is the best way to move even further ahead.
+        </p>
+        <p>
+            Enjoy the holidays and keep winning!
+        </p>
+        <div class="signature">Best wishes from your nephew/niece.</div>
+    </div>
+
+    <script>
+        // Hiệu ứng pháo hoa đơn giản
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let w, h, particles = [];
+
+        function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+        window.addEventListener("resize", resize); resize();
+
+        function random(min, max) { return Math.random() * (max - min) + min; }
+
+        function Particle(x, y) {
+            this.x = x; this.y = y;
+            this.vx = random(-2, 2); this.vy = random(-2, 2);
+            this.alpha = 1; this.color = `hsl(${random(30, 60)}, 100%, 60%)`; // Màu vàng/cam
+        }
+        Particle.prototype.update = function() {
+            this.x += this.vx; this.y += this.vy; this.alpha -= 0.015;
+        }
+        Particle.prototype.draw = function() {
+            ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color;
+            ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI * 2); ctx.fill();
+        }
+
+        function loop() {
+            ctx.globalAlpha = 0.1; ctx.fillStyle = "black"; ctx.fillRect(0, 0, w, h);
+            if (Math.random() < 0.1) { // Tạo pháo hoa ngẫu nhiên
+                let x = random(0, w); let y = random(0, h);
+                for(let i=0; i<30; i++) particles.push(new Particle(x, y));
+            }
+            particles = particles.filter(p => p.alpha > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+</html>
